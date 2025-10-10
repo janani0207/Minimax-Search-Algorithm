@@ -1,6 +1,6 @@
 <h1>ExpNo 5 : Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game</h1> 
-<h3>Name:           </h3>
-<h3>Register Number/Staff Id:          </h3>
+<h3>Name:           janani shree G R
+<h3>Register Number/Staff Id:          212224060105
 <H3>Aim:</H3>
 <p>
     Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game
@@ -109,6 +109,180 @@ end
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/8ca1b08a-8312-4ef5-89df-e69b7b2c3fa2)
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/dc06427a-d4ce-43a1-95bd-9acfaefac323)
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a8a27e2a-6fd4-46a2-afb5-6d27b8556702)
+<h1>Exp No: 5 — Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE Game</h1> 
+<h3>Name: Janani Shree G R</h3>
+<h3>Register Number / Staff Id: 212224060105</h3>
+
+<h3>Aim:</h3>
+<p>To implement the Minimax Search Algorithm for a simple Tic-Tac-Toe game.</p>
+
+<h3>Theory and Procedure:</h3>
+<p>
+The Minimax algorithm is a decision-making algorithm used in two-player games such as Tic-Tac-Toe. 
+It ensures the player makes the best possible move assuming the opponent also plays optimally.
+The goal of the algorithm is to minimize the possible loss in a worst-case scenario.
+</p>
+
+<p>
+To understand the concept of Minimax, consider the following:
+If I play perfectly, I will either win or draw the game. If both players play perfectly, the game will always end in a draw.
+</p>
+
+<p>
+We assign numerical values to game outcomes:
+</p>
+<ul>
+<li>Win → +10 points</li>
+<li>Loss → -10 points</li>
+<li>Draw → 0 points</li>
+</ul>
+
+<p>
+The algorithm explores all possible game states recursively.  
+When it is X's turn, the algorithm chooses the move that maximizes the score.  
+When it is O's turn, it chooses the move that minimizes the score.
+</p>
+
+<h4>Steps in the Algorithm:</h4>
+<ol>
+<li>If the game is over, return the score (+10, -10, or 0).</li>
+<li>Otherwise, generate all possible moves.</li>
+<li>For each move, recursively call the Minimax function to evaluate its score.</li>
+<li>If it’s X’s turn, choose the move with the maximum score.</li>
+<li>If it’s O’s turn, choose the move with the minimum score.</li>
+</ol>
+
+<h3>Example:</h3>
+<p>Suppose it is X’s turn in the following state:</p>
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/498656fc-79ce-4234-a623-06568bad8dda" alt="Example Image 1">
+<p>X should play the move that leads directly to a win (+10). O, on the other hand, would play to minimize X’s score (choose moves that lead to -10 for X).</p>
+
+<h3>Description of Minimax:</h3>
+<p>
+The algorithm alternates between maximizing and minimizing moves:
+</p>
+<ul>
+<li>When it’s X’s turn — maximize the score.</li>
+<li>When it’s O’s turn — minimize the score.</li>
+<li>This process continues recursively until a terminal state (win, lose, or draw) is reached.</li>
+</ul>
+
+<p>From the full move tree, X will ultimately choose the path that guarantees the highest possible score.</p>
+
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/12b82542-54fb-47e7-8f76-b75fddc40f92" alt="Move Tree">
+
+<h3>Algorithm (Pseudo Code):</h3>
+
+<pre>
+function minimax(game):
+    if game.over():
+        return score(game)
+    scores = []
+    moves = []
+
+    for each move in game.get_available_moves():
+        possible_game = game.get_new_state(move)
+        scores.append(minimax(possible_game))
+        moves.append(move)
+
+    if game.active_turn == player:
+        # Maximize the score
+        max_index = index of max(scores)
+        choice = moves[max_index]
+        return scores[max_index]
+    else:
+        # Minimize the score
+        min_index = index of min(scores)
+        choice = moves[min_index]
+        return scores[min_index]
+</pre>
+
+<h3>Python Implementation:</h3>
+
+<pre>
+import math
+
+# Function to check winner
+def check_winner(board):
+    win_conditions = [
+        [0,1,2], [3,4,5], [6,7,8],  # rows
+        [0,3,6], [1,4,7], [2,5,8],  # columns
+        [0,4,8], [2,4,6]            # diagonals
+    ]
+    for a,b,c in win_conditions:
+        if board[a] == board[b] == board[c] and board[a] != ' ':
+            return board[a]
+    return None
+
+# Check if moves are left
+def moves_left(board):
+    return ' ' in board
+
+# Minimax function
+def minimax(board, depth, is_maximizing):
+    winner = check_winner(board)
+    if winner == 'X':
+        return 10 - depth
+    elif winner == 'O':
+        return depth - 10
+    elif not moves_left(board):
+        return 0
+
+    if is_maximizing:
+        best = -math.inf
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'X'
+                best = max(best, minimax(board, depth + 1, False))
+                board[i] = ' '
+        return best
+    else:
+        best = math.inf
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'O'
+                best = min(best, minimax(board, depth + 1, True))
+                board[i] = ' '
+        return best
+
+# Best move for X
+def find_best_move(board):
+    best_val = -math.inf
+    best_move = -1
+    for i in range(9):
+        if board[i] == ' ':
+            board[i] = 'X'
+            move_val = minimax(board, 0, False)
+            board[i] = ' '
+            if move_val > best_val:
+                best_val = move_val
+                best_move = i
+    return best_move
+
+# Sample game
+board = ['X', 'O', 'X',
+         'O', 'O', ' ',
+         ' ', 'X', ' ']
+
+best_move = find_best_move(board)
+print("The best move for X is position:", best_move)
+</pre>
+
+<h3>Sample Input and Output:</h3>
+
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/6b668685-8bcc-43c5-b5c2-ddd43f3da84a" alt="Sample 1">
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/8ca1b08a-8312-4ef5-89df-e69b7b2c3fa2" alt="Sample 2">
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/dc06427a-d4ce-43a1-95bd-9acfaefac323" alt="Sample 3">
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a8a27e2a-6fd4-46a2-afb5-6d27b8556702" alt="Sample 4">
+<img src="https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255" alt="Sample 5">
+
+<hr>
+
+<h3>Result:</h3>
+<p>
+Thus, the implementation of the <b>Minimax Search Algorithm</b> for a simple Tic-Tac-Toe game was carried out successfully.
+</p>
+
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255)
 
 <hr>
